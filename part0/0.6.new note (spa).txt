@@ -1,0 +1,8 @@
+title new note (spa)
+
+note left of browser: sending xhr post request
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: response with HTTP 201 Created success status
+note right of server: response header: content-type: application/json
+note right of server: response data (json): {"message":"note created"}
+

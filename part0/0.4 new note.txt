@@ -1,0 +1,21 @@
+title new note
+
+note right of browser: a post request with "content-type: application/x-www-form-urlencoded"
+note right of browser: sending data:  "note: someText"
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/notes
+
+server-->browser: response with Status Code: 302 
+note right of browser: and then browser refresh the page
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: main.js
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: data.json
+
+
+
+

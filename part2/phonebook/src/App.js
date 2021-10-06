@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
+import axios from 'axios'
+
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' }
-  ])
-  const [filteredPersons, setFilteredPersons] = useState([{ name: 'Arto Hellas', number: '040-123456' }]);
+  const [persons, setPersons] = useState([])
+  const [filteredPersons, setFilteredPersons] = useState([]);
 
 
   const handeChangeFilter = (filterValue) => {
@@ -21,6 +21,15 @@ const App = () => {
   const handleSetPersons = (person) => {
     setPersons(persons.concat(person))
   }
+
+  const fetchData = () => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then((res) => {
+        setPersons(res.data)
+      })
+  }
+  useEffect(fetchData, [])
 
   useEffect(() => {
     setFilteredPersons(persons.concat())

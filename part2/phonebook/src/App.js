@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
-import axios from 'axios'
+import api from './services/api'
 
 
 const App = () => {
@@ -19,30 +19,73 @@ const App = () => {
 
 
   const handleSetPersons = (person) => {
-    setPersons(persons.concat(person))
-  }
-
-  const fetchData = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((res) => {
-        setPersons(res.data)
+    api.addPerson(person)
+      .then((data) => {
+        setPersons(persons.concat(data))
+      })
+      .catch((e) => {
+        console.log(e);
       })
   }
-  useEffect(fetchData, [])
+
+  useEffect(() => {
+    api.getPersons()
+      .then((data) => {
+        setPersons(data)
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+  }, [])
 
   useEffect(() => {
     setFilteredPersons(persons.concat())
   }, [persons]);
+
+  const handleDeletePerson = (person) => {
+    const isConfirm = window.confirm(`Delete ${person.name} ?`)
+    if (isConfirm) {
+      api.deletePerson(person)
+        .then((res) => {
+          const newPersons = persons.filter(item => item.id !== person.id)
+          setPersons(newPersons)
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+    }
+  }
+  const handleUpdatePerson = (person) => {
+    let id = ''
+    for (const item of persons) {
+      if (item.name === person.name) {
+        id = item.id
+      }
+    }
+    api.updatePerson(id, person)
+      .then((res) => {
+        const newPersons = persons.map((item) => {
+          if (item.id === res.id) {
+            return res
+          }
+          return item
+        })
+        setPersons(newPersons)
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+  }
+
 
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter handeChangeFilter={handeChangeFilter} />
       <h3>Add a new</h3>
-      <PersonForm handleSetPersons={handleSetPersons} persons={persons} />
+      <PersonForm handleSetPersons={handleSetPersons} persons={persons} handleUpdatePerson={handleUpdatePerson} />
       <h2>Numbers</h2>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} handleDelete={handleDeletePerson} />
     </div>
   )
 }

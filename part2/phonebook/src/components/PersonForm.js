@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const PersonForm = ({ persons, handleSetPersons }) => {
+const PersonForm = ({ persons, handleSetPersons, handleUpdatePerson }) => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
 
@@ -20,12 +20,15 @@ const PersonForm = ({ persons, handleSetPersons }) => {
 
         const isDuplicate = persons.some((person) => person.name === newName)
         if (isDuplicate) {
-            const message = `${newName} is already added to phonebook`;
-            alert(message);
+            const isConfirm = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+            if (isConfirm) {
+                handleUpdatePerson({ name: newName, number: newNumber })
+                setNewName('')
+                setNewNumber('')
+            }
             return
         }
         setNewName('')
-        console.log('5555555',newName);
         setNewNumber('')
         handleSetPersons({ name: newName, number: newNumber })
     }

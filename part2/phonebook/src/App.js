@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 import api from './services/api'
 
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [filteredPersons, setFilteredPersons] = useState([]);
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
+
 
 
   const handeChangeFilter = (filterValue) => {
@@ -17,11 +21,20 @@ const App = () => {
     setFilteredPersons(newArry)
   }
 
+  const setNotification = (msg, type) => {
+    setMessage(msg)
+    setMessageType(type)
+  }
+
 
   const handleSetPersons = (person) => {
     api.addPerson(person)
       .then((data) => {
+        setNotification(`Added ${person.name}`, 'success')
         setPersons(persons.concat(data))
+        setTimeout(() => {
+          setNotification(null, null)
+        }, 5_000);
       })
       .catch((e) => {
         console.log(e);
@@ -52,6 +65,11 @@ const App = () => {
         })
         .catch((e) => {
           console.log(e);
+
+          setNotification(`Information of ${person.name} has already been removed from server`, 'error')
+          setTimeout(() => {
+            setNotification(null, null)
+          }, 5_000);
         })
     }
   }
@@ -81,6 +99,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} messageType={messageType} />
       <Filter handeChangeFilter={handeChangeFilter} />
       <h3>Add a new</h3>
       <PersonForm handleSetPersons={handleSetPersons} persons={persons} handleUpdatePerson={handleUpdatePerson} />

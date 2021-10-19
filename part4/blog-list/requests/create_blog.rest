@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs/
+Content-Type: application/json
+
+{
+  "title": "Some Title",
+  "author": "Alireza Gholami",
+  "url": "https://google.com",
+  "likes": "2021"
+}

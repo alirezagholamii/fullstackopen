@@ -1,0 +1,9 @@
+PUT http://localhost:3001/api/blogs/616f1efb494d53f81b5d5279
+Content-Type: application/json
+
+{
+  "title": "***Some Title****",
+  "author": "sSAlireza Gholami",
+  "url": "https://google.com",
+  "likes": "50"
+}

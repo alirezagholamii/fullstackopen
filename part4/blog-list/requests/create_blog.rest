@@ -1,9 +1,10 @@
 POST http://localhost:3001/api/blogs/
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYxN2MwNzZjOTExNTlkZDQyY2FiYmVkZiIsImlhdCI6MTYzNTUzNzIzMywiZXhwIjoxNjM1NTQwODMzfQ.9lVhYJWm23Y62WItlpqQRRwtdqtGJC1edFTwtyu7WK8  
 
 {
-  "title": "Some Title",
-  "author": "Alireza Gholami",
-  "url": "https://google.com",
-  "likes": "2021"
+  "title": "somy32424hin",
+  "author": "root",
+  "url": "https://googleedsed.com",
+  "likes": "221"
 }

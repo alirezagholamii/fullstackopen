@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
-const helper = require('./test_helper ')
+const helper = require('./test_helper')
 const supertest = require('supertest')
 // eslint-disable-next-line no-unused-vars
 const mongoose = require('mongoose')
@@ -47,7 +47,7 @@ describe('when there is initially one user in db', () => {
     const newUser = {
       username: 'root',
       name: 'Superuser',
-      password: 'salainen',
+      password: '123456',
     }
 
     const result = await api

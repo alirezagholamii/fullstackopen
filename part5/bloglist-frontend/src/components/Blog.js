@@ -26,9 +26,9 @@ const Blog = ({ blog, addLike, removeBlog }) => {
       <div style={blogStyle}>
         <p> {blog.title}  <button onClick={visibilityHanlder}>hide</button></p>
         <p>{blog.url}</p>
-        <p>{blog.likes}<button onClick={addLike}>like</button></p>
+        <p>{blog.likes}<button className="likeBtn" onClick={addLike}>like</button></p>
         <p>{blog.author}</p>
-        {blog.author === user.name ? <p><button style={{ backgroundColor: 'red' }} onClick={removeBlog}>remove</button></p> : null}
+        {blog.author === user?.name ? <p><button style={{ backgroundColor: 'red' }} onClick={removeBlog}>remove</button></p> : null}
 
       </div>
 

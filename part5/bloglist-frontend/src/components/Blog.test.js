@@ -1,49 +1,78 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { render, fireEvent } from '@testing-library/react'
-import { prettyDOM } from '@testing-library/react'
+// import { prettyDOM } from '@testing-library/react'
 
 import Blog from './Blog'
 
-test('renders just title', () => {
-  const blog = {
-    title: 'some title',
-    author: 'alireza gholami',
-    url: 'https://ag.com',
-    likes: 500
-  }
+describe('<Blog />', () => {
+  let component
+  let mockHandler
+  beforeEach(() => {
+    const blog = {
+      title: 'some title',
+      author: 'alireza gholami',
+      url: 'https://ag.com',
+      likes: 500
+    }
+    mockHandler = jest.fn()
 
-  const component = render(
-    <Blog blog={blog} removeBlog={() => { }} addLike={() => { }} />
-  )
-  component.debug()
+    component = render(
+      <Blog blog={blog} removeBlog={() => { }} addLike={mockHandler} />
+    )
+  })
 
-  const div = component.container.querySelector('div')
+  test('renders just title', () => {
+    // component.debug()
 
-  console.log(prettyDOM(div))
+    // const div = component.container.querySelector('div')
 
-  expect(component.container).toHaveTextContent(
-    'some title'
-  )
+    // console.log(prettyDOM(div))
+
+    expect(component.container).toHaveTextContent(
+      'some title'
+    )
+  })
+
+  test('does not render url or number of likes by default', () => {
+    const div = component.container.querySelector('.blog')
+    expect(div).not.toHaveTextContent(
+      'https://ag.com'
+    )
+    expect(div).not.toHaveTextContent(
+      '500'
+    )
+  })
+
+  test('show url and likes when show button clicked', () => {
+    const div = component.container.querySelector('.blog')
+    const button = component.container.querySelector('button')
+    fireEvent.click(button)
+    expect(div).toHaveTextContent(
+      'https://ag.com'
+    )
+    expect(div).toHaveTextContent(
+      '500'
+    )
+  })
+
+  test('when like button clicked twice, likeHandler is called twice too', () => {
+    const button = component.container.querySelector('button')
+    fireEvent.click(button)
+    const likeButton = component.container.querySelector('.likeBtn')
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+
+  })
+
 
 })
 
-test('does not render url or number of likes by default ', () => {
-  const blog = {
-    title: 'some title',
-    author: 'alireza gholami',
-    url: 'https://ag.com',
-    likes: 500
-  }
 
-  const component = render(
-    <Blog blog={blog} removeBlog={() => { }} addLike={() => { }} />
-  )
-  const div = component.container.querySelector('.blog')
-  expect(div).not.toHaveTextContent(
-    'https://ag.com'
-  )
-  expect(div).not.toHaveTextContent(
-    '500'
-  )
-})
+
+
+
+

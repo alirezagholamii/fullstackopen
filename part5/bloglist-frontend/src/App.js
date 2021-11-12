@@ -31,13 +31,11 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      getBlogs()
       blogService.setToken(user.token)
     }
   }, [])
 
-  useEffect(() => {
-    getBlogs()
-  }, [])
 
   const getBlogs = async () => {
     const response = await blogService.getAll()

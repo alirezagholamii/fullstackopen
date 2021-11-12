@@ -9,7 +9,8 @@
     "deploy": "git push heroku main",
     "logs:prod": "heroku logs --tail",
     "lint": "eslint .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "start:test": "cross-env NODE_ENV=test nodemon index.js"
   },
   "keywords": [],
   "author": "Alireza Gholami",

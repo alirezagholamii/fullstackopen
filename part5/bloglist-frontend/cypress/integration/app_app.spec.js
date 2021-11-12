@@ -70,12 +70,49 @@ describe('Blog app', function () {
         "likes": "332"
       };
       cy.createBlog(obj)
-      
+
       cy.contains('view').click()
       cy.get('.like-numbers').should('have.text', '0')
 
       cy.contains('like').click()
       cy.get('.like-numbers').should('have.text', '1')
+    })
+
+    it('A blog can be removed by user that is creator', function () {
+      const obj = {
+        "title": "@this is something",
+        "author": "root",
+        "url": "https://goosssgleedsed.com",
+        "likes": "332"
+      };
+      cy.createBlog(obj)
+
+      cy.contains('view').click()
+      cy.contains('remove').click()
+      cy.get('.blog').should('have.length', 0)
+
+    })
+    it('A blog can not be removed by other users', function () {
+      const obj = {
+        "title": "@this is something",
+        "author": "root",
+        "url": "https://goosssgleedsed.com",
+        "likes": "332"
+      };
+      cy.createBlog(obj)
+      cy.contains('logout').click()
+      cy.request('POST', 'http://localhost:3001/api/users/', {
+        "blogs": [],
+        "username": "moot",
+        "name": "moot",
+        "password": "123456"
+      })
+      cy.login({ username: 'moot', password: '123456' })
+      cy.contains('view').click()
+      cy.get('#removeButton').should('have.length', 0)
+
+
+
     })
   })
 })

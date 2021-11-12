@@ -61,5 +61,21 @@ describe('Blog app', function () {
       cy.contains('@this is something')
       cy.get('.blog').should('have.length', 1)
     })
+
+    it('like a blog', function () {
+      const obj = {
+        "title": "@this is something",
+        "author": "root",
+        "url": "https://goosssgleedsed.com",
+        "likes": "332"
+      };
+      cy.createBlog(obj)
+      
+      cy.contains('view').click()
+      cy.get('.like-numbers').should('have.text', '0')
+
+      cy.contains('like').click()
+      cy.get('.like-numbers').should('have.text', '1')
+    })
   })
 })

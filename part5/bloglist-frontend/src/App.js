@@ -31,8 +31,9 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      getBlogs()
       blogService.setToken(user.token)
+      getBlogs()
+
     }
   }, [])
 
@@ -131,9 +132,12 @@ const App = () => {
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
             <BlogForm createBlog={createBlog} />
           </Togglable>
-          {blogs.map(blog =>
-            <Blog addLike={() => { handleAddLike(blog) }} removeBlog={() => { handleRemoveBlog(blog) }} key={blog.id} blog={blog} />
-          )}
+          <div id="blogList">
+            {blogs.map(blog =>
+              <Blog addLike={() => { handleAddLike(blog) }} removeBlog={() => { handleRemoveBlog(blog) }} key={blog.id} blog={blog} />
+            )}
+          </div>
+
         </div>}
     </div>
   )

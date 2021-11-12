@@ -1,6 +1,14 @@
 describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
+
+    cy.request('POST', 'http://localhost:3001/api/users/', {
+      "blogs": [],
+      "username": "root",
+      "name": "root",
+      "password": "123456"
+    })
+
     cy.visit('http://localhost:3000')
   })
 
@@ -12,13 +20,19 @@ describe('Blog app', function () {
   })
 
   describe('Login', function () {
+    it('fails with wrong credentials', function () {
+      cy.get('#username').type('fakeUser')
+      cy.get('#password').type('123456')
+      cy.get('#login-button').click()
+      cy.contains('invalid username or password')
+
+      cy.get('.error')
+        .should('contain', 'invalid username or password')
+        .and('have.css', 'color', 'rgb(255, 0, 0)')
+        .and('have.css', 'border-style', 'solid')
+    })
+
     it('succeeds with correct credentials', function () {
-      cy.request('POST', 'http://localhost:3001/api/users/', {
-        "blogs": [],
-        "username": "root",
-        "name": "root",
-        "password": "123456"
-      })
       cy.get('#username').type('root')
       cy.get('#password').type('123456')
       cy.get('#login-button').click()
@@ -28,16 +42,24 @@ describe('Blog app', function () {
 
     })
 
-    it('fails with wrong credentials', function () {
-      cy.get('#username').type('fakeUser')
-      cy.get('#password').type('123456')
-      cy.get('#login-button').click()
-      cy.contains('invalid username or password')
 
-      cy.get('.error')
-      .should('contain', 'invalid username or password')
-      .and('have.css', 'color', 'rgb(255, 0, 0)')
-      .and('have.css', 'border-style', 'solid')
+  })
+
+  describe('When logged in', function () {
+    beforeEach(function () {
+      cy.login({ username: 'root', password: '123456' })
+    })
+
+    it('A blog can be created', function () {
+      const obj = {
+        "title": "@this is something",
+        "author": "root",
+        "url": "https://goosssgleedsed.com",
+        "likes": "332"
+      };
+      cy.createBlog(obj)
+      cy.contains('@this is something')
+      cy.get('.blog').should('have.length', 1)
     })
   })
 })

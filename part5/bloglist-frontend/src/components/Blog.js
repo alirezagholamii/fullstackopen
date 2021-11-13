@@ -20,13 +20,13 @@ const Blog = ({ blog, addLike, removeBlog }) => {
   return (
     isVisible === false ?
       <div style={blogStyle} className="blog">
-        {blog.title} <button onClick={visibilityHanlder}>view</button>
+        {blog.title} <button className="show" onClick={visibilityHanlder}>view</button>
       </div>
       :
       <div style={blogStyle}>
         <p> {blog.title}  <button onClick={visibilityHanlder}>hide</button></p>
         <p>{blog.url}</p>
-        <p><span class="like-numbers">{blog.likes}</span><button className="likeBtn" onClick={addLike}>like</button></p>
+        <p><span className="like-number">{blog.likes}</span><button className="likeBtn" onClick={addLike}>like</button></p>
         <p>{blog.author}</p>
         {blog.author === user?.name ? <p><button id="removeButton" style={{ backgroundColor: 'red' }} onClick={removeBlog}>remove</button></p> : null}
 

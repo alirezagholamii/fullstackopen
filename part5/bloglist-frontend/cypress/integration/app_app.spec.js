@@ -72,10 +72,10 @@ describe('Blog app', function () {
       cy.createBlog(obj)
 
       cy.contains('view').click()
-      cy.get('.like-numbers').should('have.text', '0')
+      cy.get('.like-number').should('have.text', '0')
 
       cy.contains('like').click()
-      cy.get('.like-numbers').should('have.text', '1')
+      cy.get('.like-number').should('have.text', '1')
     })
 
     it('A blog can be removed by user that is creator', function () {
@@ -110,9 +110,67 @@ describe('Blog app', function () {
       cy.login({ username: 'moot', password: '123456' })
       cy.contains('view').click()
       cy.get('#removeButton').should('have.length', 0)
+    })
+  })
 
+  describe('Blogs List', function () {
+    it('Blogs sorted by likes number', function () {
+      // it.only('Blogs sorted by likes number', function () {
+      cy.loginRequest({ username: 'root', password: '123456' })
+      let posts = [{
+        "title": "post that have 101 likes",
+        "author": "root",
+        "url": "https://goosssgleedsed.com",
+        "likes": "101"
+      },
+      {
+        "title": "@@ ddpost that have 41 likes",
+        "author": "root",
+        "url": "https://goosssgleedsed.com",
+        "likes": "41"
+      },
+      {
+        "title": "+!+!+ ddpost that have 2 likes",
+        "author": "root",
+        "url": "https://goosssgleedsed.com",
+        "likes": "2"
+      },
+      {
+        "title": "+!500+!+ ddpost that have 500 likes",
+        "author": "root",
+        "url": "https://goosssgleedsed.com",
+        "likes": "500"
+      }
+      ]
+      for (const post of posts) {
+        cy.createBlogRequest(post)
+      }
+      cy.request('POST', 'http://localhost:3001/api/login', {
+        username: 'root', password: '123456'
+      }).then(({ body }) => {
+        localStorage.setItem('loggedUser', JSON.stringify(body))
 
-
+        cy.request({
+          method: 'GET',
+          url: 'http://localhost:3001/api/blogs',
+          headers: {
+            'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedUser')).token}`
+          }
+        }).then((res) => {
+          const result = res.body;
+          result.sort((a, b) => b.likes - a.likes)
+          cy.login({ username: 'root', password: '123456' })
+          cy.get('.blog').should('have.length', 4)
+          cy.get('.blog').then((blogs) => {
+            cy.get('.show').click({ multiple: true })
+            cy.get('.like-number').then((likes) => {
+              likes.map((index, item) => {
+                expect(likes[index].innerText).to.contain(result[index].likes)
+              })
+            })
+          })
+        })
+      })
     })
   })
 })

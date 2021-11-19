@@ -29,7 +29,7 @@ const reducer = (state = initialState, action) => {
           return { ...item, votes: item.votes + 1 }
         }
         return item
-      })
+      }).sort((a, b) => (b.votes - a.votes))
     case 'NEW_ANECDOTE':
       return [...state, {
         content: action.data.content,

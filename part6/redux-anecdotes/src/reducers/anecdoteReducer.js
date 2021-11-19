@@ -30,6 +30,12 @@ const reducer = (state = initialState, action) => {
         }
         return item
       })
+    case 'NEW_ANECDOTE':
+      return [...state, {
+        content: action.data.content,
+        id: getId(),
+        votes: 0
+      }]
     default:
       return state
   }

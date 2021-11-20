@@ -12,7 +12,21 @@ const createNew = async (content) => {
   return response.data
 }
 
-export default {
+const vote = async (anecdote) => {
+  try {
+    const response = await axios.put(
+      `${baseUrl}/${anecdote.id}`,
+      { ...anecdote, votes: anecdote.votes + 1 }
+    )
+    return response.data
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+const service = {
   getAll,
   createNew,
+  vote
 }
+export default service

@@ -9,7 +9,7 @@ const reducer = (state = [], action) => {
     case 'NEW_VOTE':
       return state.map((item) => {
         if (item.id === action.data.id) {
-          return { ...item, votes: item.votes + 1 }
+          return { ...action.data }
         }
         return item
       }).sort((a, b) => (b.votes - a.votes))
@@ -20,14 +20,12 @@ const reducer = (state = [], action) => {
     default:
       return state
   }
-
-
-
 }
 
 export const initializeAnecdotes = () => {
   return async dispatch => {
     const anecdotes = await anecdoteService.getAll()
+    anecdotes.sort((a, b) => (b.votes - a.votes))
     dispatch({
       type: 'INIT_ANECDOTES',
       data: anecdotes,
@@ -45,10 +43,13 @@ export const createAnecdote = (data) => {
   }
 }
 
-export const vote = (id) => {
-  return {
-    type: 'NEW_VOTE',
-    data: { id }
+export const vote = (anecdote) => {
+  return async dispatch => {
+    const result = await anecdoteService.vote(anecdote)
+    dispatch({
+      type: 'NEW_VOTE',
+      data: result,
+    })
   }
 }
 

@@ -9,9 +9,9 @@ const AnecdoteList = () => {
     return state.anecdotes.filter(item => item.content.includes(filterWord))
   })
   const dispatch = useDispatch()
-  const addVote = ({ id, content }) => {
-    dispatch(vote(id))
-    dispatch(showNotification(`you voted '${content}'`))
+  const addVote = (anecdote) => {
+    dispatch(vote(anecdote))
+    dispatch(showNotification(`you voted '${anecdote.content}'`))
     setTimeout(() => {
       dispatch(clearNotification())
     }, 5_000)

@@ -1,4 +1,4 @@
-
+let timeoutID;
 
 const reducer = (state = '', action) => {
   switch (action.type) {
@@ -13,13 +13,14 @@ const reducer = (state = '', action) => {
 }
 export const showNotification = (message, time) => {
   return async dispatch => {
+    clearTimeout(timeoutID)
     dispatch({
       type: 'SHOW_NOTIFICATION',
       data: {
         message,
       }
     })
-    setTimeout(() => {
+    timeoutID = setTimeout(() => {
       dispatch({
         type: 'CLEAR_NOTIFICATION',
       })

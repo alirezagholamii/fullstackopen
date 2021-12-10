@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 
 
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = ({ createBlogHandler }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
   const handleCreate = (event) => {
     event.preventDefault()
-    createBlog({ title, author, url })
+    createBlogHandler({ title, author, url })
     setTitle('')
     setAuthor('')
     setUrl('')

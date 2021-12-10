@@ -7,7 +7,7 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs } from './reducers/blogReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { showNotification } from './reducers/notificationReducer'
 
 
@@ -18,21 +18,12 @@ const App = () => {
   const dispatch = useDispatch()
 
   const blogs = useSelector((state) => state.blogs)
-
-  // const [blogs, setBlogs] = useState([])
+  console.log('Oh oH')
 
 
   const [user, setUser] = useState(null)
 
-  // const [message, setMessage] = useState(null)
-  // const [messageType, setMessageType] = useState(null)
-
   const blogFormRef = useRef()
-
-  // const setNotification = (msg, type, time) => {
-  //   setMessage(msg)
-  //   setMessageType(type)
-  // }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -46,13 +37,6 @@ const App = () => {
     }
   }, [dispatch])
 
-
-  // const getBlogs = async () => {
-  //   const response = await blogService.getAll()
-  //   response.sort((a, b) => b.likes - a.likes)
-  //   setBlogs(response)
-  // }
-
   const handleLogin = async (obj) => {
     try {
       const user = await loginService.login(obj)
@@ -63,29 +47,19 @@ const App = () => {
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
+      dispatch(initializeBlogs())
+
     } catch (e) {
       console.log(e.response.data.error);
-      dispatch(showNotification(e.response.data.error, 'error',5))
-      // setNotification(e.response.data.error, 'error')
-      // setTimeout(() => {
-      //   setNotification(null, null)
-      // }, 5_000)
+      dispatch(showNotification(e.response.data.error, 'error', 5))
     }
   }
 
-  const createBlog = async (obj) => {
-    console.log('create blog');
+  const createBlogHandler = (obj) => {
     try {
       blogFormRef.current.toggleVisibility()
-
-      const result = await blogService.create(obj)
-      // setBlogs(blogs.concat(result))
-      dispatch(showNotification(`a new Blog ${result.title} by ${result.author} added`, 'success',5))
-
-      // setNotification(`a new Blog ${result.title} by ${result.author} added`, 'success')
-      // setTimeout(() => {
-      //   setNotification(null, null)
-      // }, 5_000);
+      dispatch(createBlog(obj))
+      dispatch(showNotification(`a new Blog ${obj.title} by ${obj.author} added`, 'success', 5))
 
     } catch (e) {
       console.log(e);
@@ -142,7 +116,7 @@ const App = () => {
         <div>
           <span>{user.name} logged in</span><button onClick={handleLogout}>logout</button>
           <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={createBlog} />
+            <BlogForm createBlogHandler={createBlogHandler} />
           </Togglable>
           <div id="blogList">
             {blogs.map(blog =>

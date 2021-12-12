@@ -56,7 +56,7 @@ const BlogForm = ({ createBlogHandler }) => {
 }
 
 BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
+  createBlogHandler: PropTypes.func.isRequired
 }
 
 export default BlogForm

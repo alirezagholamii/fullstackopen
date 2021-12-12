@@ -7,7 +7,7 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog, editBlog, removeBlog } from './reducers/blogReducer'
 import { showNotification } from './reducers/notificationReducer'
 
 
@@ -18,8 +18,6 @@ const App = () => {
   const dispatch = useDispatch()
 
   const blogs = useSelector((state) => state.blogs)
-  console.log('Oh oH')
-
 
   const [user, setUser] = useState(null)
 
@@ -71,36 +69,19 @@ const App = () => {
     window.location.reload()
   }
 
-  const handleAddLike = async (blog) => {
+  const handleAddLike = (blog) => {
     try {
       const copyOfBlog = { ...blog }
       copyOfBlog.likes++
-      await blogService.edit(copyOfBlog)
-      const newBlogs = blogs.map((item) => {
-        if (item.id === blog.id) {
-          item.likes++
-          return item
-        }
-        return item
-      }).sort((a, b) => b.likes - a.likes)
-      // setBlogs(newBlogs)
+      dispatch(editBlog(copyOfBlog))
     } catch (e) {
       console.log(e);
     }
   }
-  const handleRemoveBlog = async (blog) => {
+  const handleRemoveBlog = (blog) => {
     const confirm = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     if (!confirm) { return }
-
-    try {
-      await blogService.remove(blog.id)
-      const newBlogs = blogs
-        .filter((item) => item.id !== blog.id)
-        .sort((a, b) => b.likes - a.likes)
-      // setBlogs(newBlogs)
-    } catch (e) {
-      console.log(e);
-    }
+    dispatch(removeBlog(blog.id))
   }
 
 

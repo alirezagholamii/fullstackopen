@@ -6,6 +6,15 @@ const reducer = (state = [], action) => {
       return action.data
     case 'NEW_BLOG':
       return [...state, action.data]
+    case 'EDIT_BLOG':
+      return state.map((item) => {
+        if (item.id === action.data.id) {
+          return action.data
+        }
+        return item
+      }).sort((a, b) => (b.likes - a.likes))
+    case 'REMOVE_BLOG':
+      return state.filter(item => item.id !== action.id)
     default:
       return state
   }
@@ -29,6 +38,31 @@ export const createBlog = (data) => {
       type: 'NEW_BLOG',
       data: newBlog,
     })
+  }
+}
+
+
+export const editBlog = (data) => {
+  return async dispatch => {
+    const editedBlog = await blogService.edit(data)
+    dispatch({
+      type: 'EDIT_BLOG',
+      data: editedBlog,
+    })
+  }
+}
+
+export const removeBlog = (id) => {
+  return async dispatch => {
+    try {
+      await blogService.remove(id)
+      dispatch({
+        type: 'REMOVE_BLOG',
+        id: id,
+      })
+    } catch (e) {
+      console.log('8====>', e);
+    }
   }
 }
 

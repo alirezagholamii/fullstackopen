@@ -11,7 +11,7 @@ import { showNotification } from './reducers/notificationReducer'
 import { initializeUsers } from './reducers/usersReducer'
 import {
   BrowserRouter as Router,
-  Switch, Route
+  Switch, Route, Link
 } from "react-router-dom"
 import Users from './components/Users'
 import User from './components/User'
@@ -51,36 +51,8 @@ const App = () => {
     dispatch(logout())
   }
 
-  const handleAddLike = (blog) => {
-    try {
-      const copyOfBlog = { ...blog }
-      copyOfBlog.likes++
-      dispatch(editBlog(copyOfBlog))
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
-  const handleRemoveBlog = (blog) => {
-    const confirm = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
-    if (!confirm) { return }
-    dispatch(removeBlog(blog.id))
-  }
 
-  const Home = () => {
-    return (
-      <>
-        <Togglable buttonLabel="new blog" ref={blogFormRef}>
-          <BlogForm createBlogHandler={createBlogHandler} />
-        </Togglable>
-        <div id="blogList">
-          {blogs.map(blog =>
-            <Blog addLike={() => { handleAddLike(blog) }} removeBlog={() => { handleRemoveBlog(blog) }} key={blog.id} blog={blog} />
-          )}
-        </div>
-      </>
-    )
-  }
   return (
     <Router>
       <h2>blogs</h2>
@@ -97,8 +69,20 @@ const App = () => {
             <Route exact path="/users">
               <Users users={users} />
             </Route>
+            <Route exact path="/blogs/:id">
+              <Blog />
+            </Route>
             <Route path="/">
-              <Home />
+              <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                <BlogForm createBlogHandler={createBlogHandler} />
+              </Togglable>
+              <div id="blogList">
+                {blogs.map(blog =>
+                  <div key={blog.id}>
+                    <Link to={'/blogs/' + blog.id}>{blog.title}</Link>
+                  </div>
+                )}
+              </div>
             </Route>
           </Switch>
         </div>}

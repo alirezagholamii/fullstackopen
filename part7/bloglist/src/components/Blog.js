@@ -1,14 +1,39 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { useParams } from "react-router";
+import { useSelector, useDispatch } from 'react-redux'
+import { removeBlog, editBlog } from '../reducers/blogReducer';
 
 
-const Blog = ({ blog, addLike, removeBlog }) => {
-  const [isVisible, setIsVisible] = useState(false)
-  const visibilityHanlder = (event) => {
-    event.preventDefault()
-    setIsVisible(!isVisible)
+
+
+const Blog = () => {
+
+  const { id } = useParams();
+  const dispatch = useDispatch()
+  const blogs = useSelector(state => state.blogs)
+  const user = useSelector(state => state.user)
+
+  const blog = blogs.find(item => item.id === id)
+  if (!blog) {
+    return (
+      <div>
+        blog not found
+      </div>
+    )
   }
-  const user = JSON.parse(localStorage.getItem('loggedUser'))
+
+  const handleAddLike = () => {
+    const copyOfBlog = { ...blog }
+    copyOfBlog.likes++
+    dispatch(editBlog(copyOfBlog))
+  }
+
+  const handleRemoveBlog = () => {
+    const confirm = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    if (!confirm) { return }
+    dispatch(removeBlog(blog.id))
+  }
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -18,28 +43,14 @@ const Blog = ({ blog, addLike, removeBlog }) => {
   }
 
   return (
-    isVisible === false ?
-      <div style={blogStyle} className="blog">
-        {blog.title} <button className="show" onClick={visibilityHanlder}>view</button>
-      </div>
-      :
-      <div style={blogStyle}>
-        <p> {blog.title}  <button onClick={visibilityHanlder}>hide</button></p>
-        <p>{blog.url}</p>
-        <p><span className="like-number">{blog.likes}</span><button className="likeBtn" onClick={addLike}>like</button></p>
-        <p>{blog.author}</p>
-        {blog.author === user?.name ? <p><button id="removeButton" style={{ backgroundColor: 'red' }} onClick={removeBlog}>remove</button></p> : null}
-
-      </div>
-
+    <div style={blogStyle}>
+      <h2> {blog.title}</h2>
+      <p>{blog.url}</p>
+      <p><span className="like-number">{blog.likes}</span><button className="likeBtn" onClick={handleAddLike}>like</button></p>
+      <p>{blog.author}</p>
+      {blog.author === user?.name ? <p><button id="removeButton" style={{ backgroundColor: 'red' }} onClick={handleRemoveBlog}>remove</button></p> : null}
+    </div>
   )
 }
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  addLike: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired,
-}
-
 
 export default Blog

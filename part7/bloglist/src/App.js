@@ -51,17 +51,33 @@ const App = () => {
     dispatch(logout())
   }
 
+  const Navigation = () => {
+    if (!user) {
+      return (<></>)
+    }
+    const navStyle = {
+      display: 'flex',
+      backgroundColor: '#e5dede',
+      gap: '10px',
+      padding: '5px'
+    }
+    return (<nav style={navStyle}>
+      <Link to="/blog">blog</Link>
+      <Link to="/users">users</Link>
+      <span>{user.name} logged in</span><button onClick={handleLogout}>logout</button>
+    </nav>)
+  }
 
 
   return (
     <Router>
-      <h2>blogs</h2>
+      <Navigation />
+      <h1>Blogs App</h1>
       <Notification />
       {user === null ?
         <LoginForm login={handleLogin} />
         :
         <div>
-          <span>{user.name} logged in</span><button onClick={handleLogout}>logout</button>
           <Switch>
             <Route exact path="/users/:id">
               <User />

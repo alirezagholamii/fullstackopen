@@ -9,6 +9,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs, createBlog, editBlog, removeBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 import { showNotification } from './reducers/notificationReducer'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link
+} from "react-router-dom"
+
+import Users from './components/Users'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -52,15 +58,29 @@ const App = () => {
       console.log(e);
     }
   }
-  
+
   const handleRemoveBlog = (blog) => {
     const confirm = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     if (!confirm) { return }
     dispatch(removeBlog(blog.id))
   }
 
+  const Home = () => {
+    return (
+      <>
+        <Togglable buttonLabel="new blog" ref={blogFormRef}>
+          <BlogForm createBlogHandler={createBlogHandler} />
+        </Togglable>
+        <div id="blogList">
+          {blogs.map(blog =>
+            <Blog addLike={() => { handleAddLike(blog) }} removeBlog={() => { handleRemoveBlog(blog) }} key={blog.id} blog={blog} />
+          )}
+        </div>
+      </>
+    )
+  }
   return (
-    <div>
+    <Router>
       <h2>blogs</h2>
       <Notification />
       {user === null ?
@@ -68,17 +88,16 @@ const App = () => {
         :
         <div>
           <span>{user.name} logged in</span><button onClick={handleLogout}>logout</button>
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlogHandler={createBlogHandler} />
-          </Togglable>
-          <div id="blogList">
-            {blogs.map(blog =>
-              <Blog addLike={() => { handleAddLike(blog) }} removeBlog={() => { handleRemoveBlog(blog) }} key={blog.id} blog={blog} />
-            )}
-          </div>
-
+          <Switch>
+            <Route path="/users">
+              <Users />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
         </div>}
-    </div>
+    </Router>
   )
 }
 

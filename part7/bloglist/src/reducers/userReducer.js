@@ -1,5 +1,6 @@
 import loginService from "../services/login"
 import blogService from "../services/blogs"
+import usersService from "../services/blogs"
 import { showNotification } from "./notificationReducer"
 
 const initailState = window.localStorage.getItem('loggedUser') ?
@@ -28,6 +29,7 @@ export const login = (obj) => {
         'loggedUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
+      usersService.setToken(user.token)
     } catch (e) {
       console.log('user', e);
       dispatch(showNotification(e.response.data.error, 'error', 5))

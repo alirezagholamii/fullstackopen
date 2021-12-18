@@ -5,6 +5,10 @@ import { showNotification } from "./notificationReducer"
 
 const initailState = window.localStorage.getItem('loggedUser') ?
   JSON.parse(window.localStorage.getItem('loggedUser')) : null;
+if (initailState !== null) {
+  blogService.setToken(initailState.token)
+  usersService.setToken(initailState.token)
+}
 
 const reducer = (state = initailState, action) => {
   switch (action.type) {
@@ -21,6 +25,8 @@ export const login = (obj) => {
   return async dispatch => {
     try {
       const user = await loginService.login(obj)
+      blogService.setToken(user.token)
+      usersService.setToken(user.token)
       dispatch({
         type: 'SET_USER',
         data: user,
@@ -28,8 +34,7 @@ export const login = (obj) => {
       window.localStorage.setItem(
         'loggedUser', JSON.stringify(user)
       )
-      blogService.setToken(user.token)
-      usersService.setToken(user.token)
+
     } catch (e) {
       console.log('user', e);
       dispatch(showNotification(e.response.data.error, 'error', 5))

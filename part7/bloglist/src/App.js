@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
-import blogService from './services/blogs'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
@@ -9,23 +8,26 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs, createBlog, editBlog, removeBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 import { showNotification } from './reducers/notificationReducer'
+import { initializeUsers } from './reducers/usersReducer'
 import {
   BrowserRouter as Router,
-  Switch, Route, Link
+  Switch, Route
 } from "react-router-dom"
-
 import Users from './components/Users'
+import User from './components/User'
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
+  const users = useSelector((state) => state.users)
+
   const blogFormRef = useRef()
 
   useEffect(() => {
     if (user) {
-      blogService.setToken(user.token)
       dispatch(initializeBlogs())
+      dispatch(initializeUsers())
     }
   }, [dispatch, user])
 
@@ -89,8 +91,11 @@ const App = () => {
         <div>
           <span>{user.name} logged in</span><button onClick={handleLogout}>logout</button>
           <Switch>
-            <Route path="/users">
-              <Users />
+            <Route exact path="/users/:id">
+              <User />
+            </Route>
+            <Route exact path="/users">
+              <Users users={users} />
             </Route>
             <Route path="/">
               <Home />

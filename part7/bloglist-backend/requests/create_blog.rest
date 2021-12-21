@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/blogs/
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1vb3QiLCJpZCI6IjYxODNkOTI2OGRlMzVmNGMwOGE2MDk4NyIsImlhdCI6MTY0MDEwNDM0OSwiZXhwIjoxNjQwMTA3OTQ5fQ.sLgTjztmT4IqY1r3s6IpaSdYwcuhOjm4zSlHt1JpEmA
+
+{
+  "title": "z11111111111111111@eee",
+  "author": "moot",
+  "url": "https://goosssgleedsed.com",
+  "likes": "332"
+}

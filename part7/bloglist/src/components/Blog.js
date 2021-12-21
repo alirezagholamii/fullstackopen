@@ -37,7 +37,6 @@ const Blog = () => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
     borderWidth: 1,
     marginBottom: 5
   }
@@ -49,6 +48,10 @@ const Blog = () => {
       <p><span className="like-number">{blog.likes}</span><button className="likeBtn" onClick={handleAddLike}>like</button></p>
       <p>{blog.author}</p>
       {blog.author === user?.name ? <p><button id="removeButton" style={{ backgroundColor: 'red' }} onClick={handleRemoveBlog}>remove</button></p> : null}
+      <h3>Comments</h3>
+      <ul>
+        {blog.comments.map((comment) => (<li>{comment}</li>))}
+      </ul>
     </div>
   )
 }

@@ -31,5 +31,11 @@ const remove = async (id) => {
   return response
 }
 
+const addComment = async (id, comment) => {
+  const url = `${baseUrl}/${id}/comments`
+  const response = await axios.post(url, comment, config);
+  return response
+}
+
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */
-export default { getAll, setToken, create, edit, remove }
+export default { getAll, setToken, create, edit, remove, addComment }

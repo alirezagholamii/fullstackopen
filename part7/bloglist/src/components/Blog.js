@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from 'react-redux'
-import { removeBlog, editBlog } from '../reducers/blogReducer';
+import { removeBlog, editBlog, addComment } from '../reducers/blogReducer';
 
 
 
@@ -12,8 +12,18 @@ const Blog = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
+  const [blog, setBlog] = useState(null)
+  // const [comments, setComments] = useState(null)
+  const [newComment, setNewComment] = useState('')
+  // const blog = blogs.find(item => item.id === id)
 
-  const blog = blogs.find(item => item.id === id)
+
+  useEffect(() => {
+    setBlog(blogs.find(item => item.id === id))
+  }, [blogs, id])
+
+
+
   if (!blog) {
     return (
       <div>
@@ -34,6 +44,13 @@ const Blog = () => {
     dispatch(removeBlog(blog.id))
   }
 
+  const handleAddComment = () => {
+    dispatch(addComment(id, {
+      comment: newComment
+    }))
+    setNewComment('')
+  }
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -49,8 +66,17 @@ const Blog = () => {
       <p>{blog.author}</p>
       {blog.author === user?.name ? <p><button id="removeButton" style={{ backgroundColor: 'red' }} onClick={handleRemoveBlog}>remove</button></p> : null}
       <h3>Comments</h3>
+      <div>
+        <input
+          type="newComment"
+          id="newComment"
+          value={newComment}
+          name="newComment"
+          onChange={({ target }) => setNewComment(target.value)} />
+        <button onClick={handleAddComment}>add comment</button>
+      </div>
       <ul>
-        {blog.comments.map((comment) => (<li>{comment}</li>))}
+        {blog.comments.map((comment, index) => (<li key={index}>{comment}</li>))}
       </ul>
     </div>
   )

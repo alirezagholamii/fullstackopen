@@ -34,7 +34,7 @@ const remove = async (id) => {
 const addComment = async (id, comment) => {
   const url = `${baseUrl}/${id}/comments`
   const response = await axios.post(url, comment, config);
-  return response
+  return response.data
 }
 
 /* eslint import/no-anonymous-default-export: [2, {"allowObject": true}] */

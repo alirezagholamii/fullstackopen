@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from 'react-redux'
 import { removeBlog, editBlog, addComment } from '../reducers/blogReducer';
@@ -12,16 +12,8 @@ const Blog = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
-  const [blog, setBlog] = useState(null)
-  // const [comments, setComments] = useState(null)
   const [newComment, setNewComment] = useState('')
-  // const blog = blogs.find(item => item.id === id)
-
-
-  useEffect(() => {
-    setBlog(blogs.find(item => item.id === id))
-  }, [blogs, id])
-
+  const blog = blogs.find(item => item.id === id)
 
 
   if (!blog) {

@@ -5,7 +5,7 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs, createBlog, editBlog, removeBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { login, logout } from './reducers/userReducer'
 import { showNotification } from './reducers/notificationReducer'
 import { initializeUsers } from './reducers/usersReducer'
@@ -15,6 +15,9 @@ import {
 } from "react-router-dom"
 import Users from './components/Users'
 import User from './components/User'
+import Container from '@material-ui/core/Container'
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 const App = () => {
   const dispatch = useDispatch()
@@ -57,52 +60,74 @@ const App = () => {
     }
     const navStyle = {
       display: 'flex',
+      justifyContent: 'space-between',
       backgroundColor: '#e5dede',
       gap: '10px',
       padding: '5px'
     }
-    return (<nav style={navStyle}>
-      <Link to="/blog">blog</Link>
-      <Link to="/users">users</Link>
-      <span>{user.name} logged in</span><button onClick={handleLogout}>logout</button>
-    </nav>)
+    return (
+      <nav style={navStyle}>
+        <div>
+          <ButtonGroup color="primary" aria-label="large outlined primary button group">
+            <Button> <Link to="/blog">blog</Link></Button>
+            <Button><Link to="/users">users</Link></Button>
+          </ButtonGroup>
+        </div>
+        <div>
+          <span>{user.name} logged in</span>
+          <Button onClick={handleLogout} variant="contained" color="secondary">
+            Logout
+          </Button>
+        </div>
+
+      </nav>
+
+    )
+  }
+
+  const containerClass = {
+    display: 'flex',
+    justifyContent: 'center'
   }
 
 
   return (
-    <Router>
-      <Navigation />
-      <h1>Blogs App</h1>
-      <Notification />
-      {user === null ?
-        <LoginForm login={handleLogin} />
-        :
-        <div>
-          <Switch>
-            <Route exact path="/users/:id">
-              <User />
-            </Route>
-            <Route exact path="/users">
-              <Users users={users} />
-            </Route>
-            <Route exact path="/blogs/:id">
-              <Blog />
-            </Route>
-            <Route path="/">
-              <Togglable buttonLabel="new blog" ref={blogFormRef}>
-                <BlogForm createBlogHandler={createBlogHandler} />
-              </Togglable>
-              <div id="blogList">
-                {blogs.map(blog =>
-                  <div key={blog.id}>
-                    <Link to={'/blogs/' + blog.id}>{blog.title}</Link>
-                  </div>
-                )}
-              </div>
-            </Route>
-          </Switch>
-        </div>}
-    </Router>
+    <Container>
+      <Router>
+        <Navigation />
+        <h1>Blogs App</h1>
+        <Notification />
+        {user === null ?
+          <LoginForm login={handleLogin} />
+          :
+          <div>
+            <Switch>
+              <Route exact path="/users/:id">
+                <User />
+              </Route>
+              <Route exact path="/users">
+                <Users users={users} />
+              </Route>
+              <Route exact path="/blogs/:id">
+                <Blog />
+              </Route>
+              <Route path="/">
+                <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                  <BlogForm createBlogHandler={createBlogHandler} />
+                </Togglable>
+                <div id="blogList">
+                  {blogs.map(blog =>
+                    <div key={blog.id}>
+                      <Link to={'/blogs/' + blog.id}>{blog.title}</Link>
+                    </div>
+                  )}
+                </div>
+              </Route>
+            </Switch>
+          </div>}
+      </Router>
+    </Container>
+
   )
 }
 

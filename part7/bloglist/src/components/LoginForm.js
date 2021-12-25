@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import './LoginForm.scss'
+
 
 const LoginForm = ({ login }) => {
   const [username, setUsername] = useState('')
@@ -11,29 +15,27 @@ const LoginForm = ({ login }) => {
     setPassword('')
   }
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="username"
-          id="username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          id="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button id="login-button" type="submit">login</button>
+    <form className="login" onSubmit={handleLogin} noValidate autoComplete="off">
+
+      <TextField type="text"
+        value={username}
+        name="username"
+        id="username"
+        onChange={({ target }) => setUsername(target.value)} label="Username" />
+
+
+      <TextField id="password"
+        type="password"
+        value={password}
+        name="Password"
+        onChange={({ target }) => setPassword(target.value)}
+        label="Password"
+      />
+      <Button color="primary" variant="contained" id="login-button" type="submit">login</Button>
+
     </form>
+
+
   )
 }
 

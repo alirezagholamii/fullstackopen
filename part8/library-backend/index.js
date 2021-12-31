@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server')
+const { v1: uuid } = require('uuid')
 
 let authors = [
   {
@@ -98,8 +99,15 @@ const typeDefs = gql`
 
     authorCount: Int!
     allAuthors:[Author!]!
-
   }
+  type Mutation {
+    addBook(
+      title: String!,
+      author: String!,
+      published: Int!,
+      genres: [String]!
+    ): Book   
+  } 
 `
 
 const resolvers = {
@@ -133,7 +141,22 @@ const resolvers = {
         return { ...item, bookCount }
       })
     },
+  },
+  Mutation: {
+    addBook: (root, args) => {
+      const book = { ...args, id: uuid() }
+      books = books.concat(book)
+      const author = authors.find((item) => item.name === args.author)
+      if (!author) {
+        authors = authors.concat({
+          name: args.author,
+          id: uuid()
+        })
+      }
+      return book
+    }
   }
+
 }
 
 const server = new ApolloServer({

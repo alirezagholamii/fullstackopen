@@ -7,7 +7,7 @@ import { useMutation } from '@apollo/client'
 
 const Authors = (props) => {
   const [name, setName] = useState('')
-  const [born, setBorn] = useState(0)
+  const [born, setBorn] = useState('')
 
   const result = useQuery(ALL_AUTHORS)
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
@@ -30,10 +30,8 @@ const Authors = (props) => {
       variables: { name, born }
     })
     console.log('8====> edit author')
-
     setName('')
-    setBorn(0)
-
+    setBorn('')
   }
 
   return (
@@ -65,11 +63,12 @@ const Authors = (props) => {
       </h2>
       <form onSubmit={submit}>
         <div>
-          name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+          <select value={name} onChange={({ target }) => setName(target.value)}>
+            <option hidden> select one</option>
+            {
+              authors.map(item => <option value={item.name} key={item.name}>{item.name}</option>)
+            }
+          </select>
         </div>
         <div>
           born

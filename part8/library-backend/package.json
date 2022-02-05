@@ -13,12 +13,11 @@
   "dependencies": {
     "apollo-server": "^3.6.0",
     "apollo-server-core": "^3.6.0",
+    "dotenv": "^16.0.0",
     "graphql": "^16.2.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.0",
     "mongoose-unique-validator": "^3.0.0",
     "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "dotenv": "^16.0.0"
   }
 }

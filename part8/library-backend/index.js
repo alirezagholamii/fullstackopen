@@ -1,6 +1,11 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server')
 const { v1: uuid } = require('uuid')
+const mongoose = require('mongoose')
+const Author = require('./models/Author')
+const Book = require('./models/Book')
+const config = require('./utils/config')
 
+/*
 let authors = [
   {
     name: 'Robert Martin',
@@ -78,6 +83,14 @@ let books = [
     genres: ['classic', 'revolution']
   },
 ]
+*/
+mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch((error) => {
+    console.log('error connecting to MongoDB:', error.message)
+  })
 
 const typeDefs = gql`
   type Book {
@@ -118,58 +131,66 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
+    bookCount: () => Book.collection.countDocuments(),
     allBooks: (root, args) => {
       if (!args.author && !args.genre) {
-        return books
+        return Book.find({})
       }
-      const byAuthor = (book) => (
-        book.author === args.author
-      )
-      const byGenre = (book) => (
-        book.genres.includes(args.genre)
-      )
-
-      if (args.author && args.genre) {
-        return books
-          .filter(byAuthor)
-          .filter(byGenre)
-      }
-
-      return args.author ? books.filter(byAuthor) : books.filter(byGenre)
-
-
     },
-    authorCount: () => authors.length,
-    allAuthors: () => {
-      return authors.map((item) => {
-        const bookCount = books.filter((book) => (book.author === item.name)).length
-        return { ...item, bookCount }
-      })
-    },
+    authorCount: () => Author.collection.countDocuments(),
+    allAuthors: () => Author.find({})
   },
   Mutation: {
-    addBook: (root, args) => {
-      const book = { ...args, id: uuid() }
-      books = books.concat(book)
-      const author = authors.find((item) => item.name === args.author)
+    addBook: async (root, args, context) => {
+      let author = await Author.findOne({ name: args.author })
       if (!author) {
-        authors = authors.concat({
+        author = new Author({
           name: args.author,
-          id: uuid()
+          id: uuid(),
+        })
+        try {
+          await author.save()
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        }
+      }
+
+      const book = new Book({
+        ...args,
+        author: author.id,
+        id: uuid()
+      })
+      try {
+        await book.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
         })
       }
+
       return book
     },
-    editAuthor: (root, args) => {
-      const author = authors.find((item) => item.name === args.name)
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({ name: args.name })
       if (!author) {
         return null
       }
-      const updatedAuthor = { ...author, born: args.born }
-      authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
-      return updatedAuthor
-    }
+      author.born = args.born
+      try {
+        await Author.findOneAndUpdate(
+          { name: author.name },
+          { born: author.born },
+          { new: true }
+        )
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+      return author
+    },
   }
 
 }
